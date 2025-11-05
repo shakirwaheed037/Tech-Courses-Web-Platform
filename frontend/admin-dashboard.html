@@ -1,0 +1,240 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Admin Dashboard - Tech Courses</title>
+  <link rel="stylesheet" href="admin-dashboard.css">
+
+</head>
+<body>
+
+  <!-- Navbar -->
+  <nav>
+    <div class="logo">TC Tech Courses</div>
+    <ul>
+      <li><a href="index.html">Home</a></li>
+      <li><a href="#courses">Courses</a></li>
+      <li><a href="index.html">About</a></li>
+    </ul>
+    <div class="buttons">
+      <button onclick="window.location.href='index.html'">Back to Home</button>
+    </div>
+  </nav>
+
+  <!-- Admin Dashboard Section -->
+  <div class="dashboard">
+    <h1>Admin Dashboard</h1>
+ <form id="courseForm" enctype="multipart/form-data">
+  <h2>Create New Course</h2>
+  <input type="text" id="title" placeholder="Course Title" required>
+  <input type="file" id="image" accept="image/*" required>
+  <textarea id="description" placeholder="Course Description" required></textarea>
+  <input type="number" id="lessons" placeholder="Number of Lessons" required>
+  <button type="submit">Upload Course</button>
+</form>
+
+
+
+    <div class="course-list">
+      <h2>All Courses</h2>
+      <div id="courses"></div>
+    </div>
+  </div>
+
+  <!-- Footer -->
+  <footer>
+    <div class="footer-logo">TC Tech Courses</div>
+    <ul>
+      <li><a href="index.html">Home</a></li>
+      <li><a href="index.html">Courses</a></li>
+      <li><a href="index.html">About Us</a></li>
+    </ul>
+    <p>© 2025 TC Tech Courses. All rights reserved.</p>
+  </footer>
+
+
+
+<!-- ==============================
+     Edit Course Modal
+============================== -->
+<div id="editModal" class="modal">
+  <div class="modal-content">
+    <span id="closeModal" class="close">&times;</span>
+    <h2>Edit Course</h2>
+
+    <label>Title</label>
+    <input type="text" id="editTitle">
+
+    <label>Description</label>
+    <textarea id="editDescription" rows="3"></textarea>
+
+    <label>Lessons</label>
+    <input type="number" id="editLessons">
+
+    <button id="saveEdit"> Save Changes</button>
+  </div>
+</div>
+
+
+
+
+
+
+
+
+
+
+<script>
+  const token = localStorage.getItem('token');
+
+  if (!token || localStorage.getItem('role') !== 'admin') {
+    alert('Access denied or Network Error');
+    window.location.href = 'login.html';
+  }
+
+  const courseForm = document.getElementById('courseForm');
+  const coursesDiv = document.getElementById('courses');
+
+  //  Upload new course
+  courseForm.addEventListener('submit', async (e) => {
+    e.preventDefault();
+
+    const formData = new FormData();
+    formData.append('title', document.getElementById('title').value);
+    formData.append('description', document.getElementById('description').value);
+    formData.append('lessons', document.getElementById('lessons').value);
+    formData.append('image', document.getElementById('image').files[0]);
+
+    try {
+      const res = await fetch('http://localhost:5000/api/courses', {
+        method: 'POST',
+        headers: { 'Authorization': `Bearer ${token}` },
+        body: formData
+      });
+
+      const data = await res.json();
+      if (res.ok) {
+        alert(' Course uploaded successfully!');
+        courseForm.reset();
+        loadCourses();
+      } else {
+        alert(data.message || 'Upload failed');
+      }
+    } catch (err) {
+      alert('Server error');
+    }
+  });
+
+  // Load all courses
+  async function loadCourses() {
+    try {
+      const res = await fetch('http://localhost:5000/api/courses');
+      const data = await res.json();
+
+      coursesDiv.innerHTML = data.map(c => `
+        <div class="course-card">
+          <img src="${c.image}" alt="${c.title}">
+          <h3>${c.title}</h3>
+          <p>${c.description}</p>
+          <p><strong>Lessons:</strong> ${c.lessons}</p>
+          <p><strong>Enrolled:</strong> ${c.enrolledStudents?.length || 0}</p>
+
+          <div class="course-actions">
+            <button onclick="openEditModal('${c._id}', '${encodeURIComponent(c.title)}', '${encodeURIComponent(c.description)}', '${c.lessons}')"> Update</button>
+            <button onclick="deleteCourse('${c._id}')">Delete</button>
+          </div>
+        </div>
+      `).join('');
+    } catch (err) {
+      coursesDiv.innerHTML = "<p>Failed to load courses.</p>";
+    }
+  }
+
+  //  Delete course
+  async function deleteCourse(id) {
+    if (!confirm('Are you sure you want to delete this course?')) return;
+
+    try {
+      const res = await fetch(`http://localhost:5000/api/courses/${id}`, {
+        method: 'DELETE',
+        headers: { 'Authorization': `Bearer ${token}` },
+      });
+
+      const data = await res.json();
+      if (res.ok) {
+        alert(' Course deleted successfully');
+        loadCourses();
+      } else {
+        alert(data.message);
+      }
+    } catch (err) {
+      alert('Server error during delete');
+    }
+  }
+
+  // ==============================
+  // ✏️ Modal Edit Form
+  // ==============================
+  const modal = document.getElementById('editModal');
+  const closeBtn = document.getElementById('closeModal');
+  const saveBtn = document.getElementById('saveEdit');
+
+  let editCourseId = null;
+
+  // Open modal
+  function openEditModal(id, title, description, lessons) {
+    editCourseId = id;
+    document.getElementById('editTitle').value = decodeURIComponent(title);
+    document.getElementById('editDescription').value = decodeURIComponent(description);
+    document.getElementById('editLessons').value = lessons;
+    modal.style.display = 'flex';
+  }
+
+  // Close modal
+  closeBtn.onclick = () => (modal.style.display = 'none');
+  window.onclick = (e) => { if (e.target === modal) modal.style.display = 'none'; };
+
+  // Save changes
+  saveBtn.addEventListener('click', async () => {
+    const newTitle = document.getElementById('editTitle').value;
+    const newDescription = document.getElementById('editDescription').value;
+    const newLessons = document.getElementById('editLessons').value;
+
+    if (!newTitle || !newDescription || !newLessons) {
+      alert("All fields are required!");
+      return;
+    }
+
+    try {
+      const res = await fetch(`http://localhost:5000/api/courses/${editCourseId}`, {
+        method: 'PUT',
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': `Bearer ${token}`,
+        },
+        body: JSON.stringify({
+          title: newTitle,
+          description: newDescription,
+          lessons: newLessons,
+        }),
+      });
+
+      const data = await res.json();
+      if (res.ok) {
+        alert(' Course updated successfully');
+        modal.style.display = 'none';
+        loadCourses();
+      } else {
+        alert(data.message);
+      }
+    } catch (err) {
+      alert('Server error during update');
+    }
+  });
+
+  loadCourses();
+</script>
+
+</body>
+</html>

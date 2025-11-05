@@ -1,0 +1,326 @@
+/* =========================
+   Global Theme
+========================= */
+:root {
+  --lemon: #fff44f;          /* Pure lemon */
+  --lemon-light: #fff97a;    /* Soft lemon */
+  --dark: #1e1e1e;           /* Dark gray */
+  --gray: #f9f9f9;           /* Page background */
+  --white: #ffffff;
+}
+
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+  font-family: "Poppins", sans-serif;
+}
+
+body {
+  background: linear-gradient(135deg, var(--lemon-light), var(--white));
+  color: var(--dark);
+  scroll-behavior: smooth;
+}
+
+/* =========================
+   Navbar
+========================= */
+nav {
+  background-color: var(--white);
+  color: var(--dark);
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 15px 50px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+  position: sticky;
+  top: 0;
+  z-index: 1000;
+}
+
+nav .logo {
+  font-size: 1.6rem;
+  font-weight: 700;
+  color: var(--dark);
+}
+
+nav ul {
+  list-style: none;
+  display: flex;
+  gap: 30px;
+}
+
+nav ul li a {
+  text-decoration: none;
+  color: var(--dark);
+  font-weight: 500;
+  transition: color 0.3s ease;
+}
+
+nav ul li a:hover {
+  color: var(--lemon);
+}
+
+/* Navbar Buttons */
+nav .buttons button {
+  padding: 8px 18px;
+  border: 2px solid var(--lemon);
+  background: var(--lemon);
+  color: var(--dark);
+  font-weight: 600;
+  border-radius: 25px;
+  margin-left: 10px;
+  cursor: pointer;
+  transition: 0.3s ease;
+}
+
+nav .buttons button:hover {
+  background-color: var(--dark);
+  color: var(--white);
+  border-color: var(--dark);
+  transform: translateY(-2px);
+}
+
+/* =========================
+   Hero / Welcome Banner
+========================= */
+.hero {
+  position: relative;
+  background: 
+    linear-gradient(rgba(255, 244, 79, 0.75), rgba(255, 249, 122, 0.75)), /* lemon overlay */
+    url("lemonimage.jpg") center/cover no-repeat;
+  color: var(--dark);
+  text-align: center;
+  padding: 120px 20px;
+}
+
+.hero h1 {
+  font-size: 2.8rem;
+  font-weight: 700;
+  margin-bottom: 20px;
+}
+
+.hero p {
+  font-size: 1.2rem;
+  max-width: 600px;
+  margin: 0 auto 30px;
+  color: #222;
+}
+
+
+.hero h1 {
+  font-size: 2.8rem;
+  font-weight: 700;
+  margin-bottom: 20px;
+}
+
+.hero p {
+  font-size: 1.2rem;
+  max-width: 600px;
+  margin: 0 auto 30px;
+  color: #333;
+}
+
+/* Hero Button */
+.btn-primary {
+  background-color: var(--white);
+  color: var(--dark);
+  padding: 12px 35px;
+  border: 2px solid var(--dark);
+  border-radius: 30px;
+  font-weight: 600;
+  font-size: 1rem;
+  transition: all 0.3s ease;
+  cursor: pointer;
+}
+
+.btn-primary:hover {
+  background-color: var(--dark);
+  color: var(--white);
+  border-color: var(--dark);
+  transform: translateY(-3px);
+}
+
+/* =========================
+   Courses Section
+========================= */
+/* ===== Courses Section ===== */
+.courses {
+  padding: 3rem 2rem;
+  background: #fffbea;
+  text-align: center;
+}
+
+.courses h2 {
+  font-size: 2rem;
+  margin-bottom: 2rem;
+  color: #222;
+}
+
+/* Fixed card width + grid layout */
+.course-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+  gap: 1.5rem;
+  justify-content: center;
+  align-items: stretch;
+}
+
+.course-card {
+  background: #fff;
+  border-radius: 10px;
+  box-shadow: 0 2px 10px rgba(0,0,0,0.05);
+  padding: 1rem;
+  transition: all 0.3s ease;
+}
+
+.course-card:hover {
+  transform: translateY(-4px);
+  box-shadow: 0 4px 14px rgba(0,0,0,0.1);
+}
+
+.course-card img {
+  width: 100%;
+  height: 150px;
+  object-fit: cover;
+  border-radius: 8px;
+}
+
+.course-card h3 {
+  margin: 0.8rem 0 0.4rem;
+  color: #000;
+}
+
+.course-card p {
+  font-size: 0.9rem;
+  color: #555;
+}
+
+.course-card button {
+  background-color: #fff44f;
+  border: none;
+  color: #000;
+  font-weight: 600;
+  padding: 0.6rem 1.2rem;
+  margin-top: 0.6rem;
+  border-radius: 5px;
+  cursor: pointer;
+  transition: 0.3s;
+}
+
+.course-card button:hover {
+  background-color: #f9e65b;
+}
+
+/* =========================
+   About Section
+========================= */
+.about {
+  padding: 80px 50px;
+ 
+  text-align: center;
+}
+
+.about::before {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: rgba(255, 255, 255, 0.2);
+  z-index: 0;
+}
+
+.about h2,
+.about p {
+  position: relative;
+  z-index: 1;
+}
+
+.about h2 {
+  font-size: 2rem;
+  margin-bottom: 20px;
+}
+
+.about p {
+  max-width: 700px;
+  margin: 0 auto;
+  font-size: 1.1rem;
+  color: #444;
+  line-height: 1.8;
+}
+
+/* =========================
+   Footer
+========================= */
+footer {
+  background-color: var(--dark);
+  color: var(--white);
+  padding: 50px 20px;
+  text-align: center;
+}
+
+footer .footer-logo {
+  font-size: 1.4rem;
+  font-weight: 700;
+  color: var(--lemon);
+  margin-bottom: 20px;
+}
+
+/* Footer Links in a Row */
+footer ul {
+  list-style: none;
+  display: flex;
+  justify-content: center;
+  gap: 25px;
+  flex-wrap: wrap;
+  margin-bottom: 15px;
+}
+
+footer ul li a {
+  color: var(--lemon);
+  text-decoration: none;
+  font-weight: 500;
+  transition: 0.3s ease;
+}
+
+footer ul li a:hover {
+  color: var(--white);
+  text-decoration: underline;
+}
+
+footer p {
+  font-size: 0.9rem;
+  color: #bbb;
+  margin-top: 10px;
+}
+
+/* =========================
+   Responsive
+========================= */
+@media (max-width: 768px) {
+  nav {
+    flex-direction: column;
+    align-items: flex-start;
+    padding: 15px 20px;
+  }
+
+  nav ul {
+    flex-direction: column;
+    gap: 15px;
+    margin-top: 10px;
+  }
+
+  .courses {
+    padding: 60px 20px;
+  }
+
+  .about {
+    padding: 60px 20px;
+  }
+
+  .hero h1 {
+    font-size: 2.2rem;
+  }
+}

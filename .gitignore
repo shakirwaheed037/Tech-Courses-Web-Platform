@@ -1,0 +1,18 @@
+# Node dependencies
+node_modules/
+
+# Environment files
+.env
+
+# Build and uploads
+uploads/
+
+# Logs
+logs
+*.log
+
+# System files
+.DS_Store
+
+# Optional
+package-lock.json

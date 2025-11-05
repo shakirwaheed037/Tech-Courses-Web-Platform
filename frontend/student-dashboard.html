@@ -1,0 +1,100 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Student Dashboard - Tech Courses</title>
+  <link rel="stylesheet" href="student-dashboard.css">
+  
+</head>
+<body>
+
+  <!-- Navbar -->
+  <nav>
+    <div class="logo">TC Tech Courses</div>
+    <ul>
+      <li><a href="index.html">Home</a></li>
+      <li><a href="#courses">Courses</a></li>
+      <li><a href="#about">About</a></li>
+    </ul>
+    <div class="buttons">
+      <button onclick="window.location.href='index.html'">Back to Home</button>
+    </div>
+  </nav>
+
+  <!-- Dashboard -->
+  <div class="dashboard">
+    <h1>Welcome, Student 👩‍🎓</h1>
+    <div id="courses"></div>
+  </div>
+
+  <!-- Footer -->
+  <footer>
+    <div class="footer-logo">TC Tech Courses</div>
+    <ul>
+      <li><a href="index.html">Home</a></li>
+      <li><a href="#">Courses</a></li>
+      <li><a href="#">About Us</a></li>
+    </ul>
+    <p>© 2025 TC Tech Courses. All rights reserved.</p>
+  </footer>
+
+  <script>
+    const token = localStorage.getItem('token');
+    const role = localStorage.getItem('role');
+
+    // Protect route
+    if (!token || role !== 'student') {
+      alert('Access denied or Network Error');
+      window.location.href = 'login.html';
+    }
+
+    const coursesDiv = document.getElementById('courses');
+
+    // Fetch all courses
+    async function loadCourses() {
+      try {
+        const res = await fetch('http://localhost:5000/api/courses');
+        const data = await res.json();
+coursesDiv.innerHTML = data.map(course => `
+  <div class="course-card">
+    <img src="http://localhost:5000${course.image}" alt="${course.title}">
+    <h3>${course.title}</h3>
+    <p>${course.description}</p>
+    <p><strong>Lessons:</strong> ${course.lessons}</p>
+    <button onclick="enrollCourse('${course._id}')">Enroll</button>
+  </div>
+`).join('');
+
+      } catch (err) {
+        coursesDiv.innerHTML = '<p>Failed to load courses.</p>';
+      }
+    }
+
+    // Enroll course
+    async function enrollCourse(courseId) {
+      try {
+        const res = await fetch(`http://localhost:5000/api/courses/${courseId}/enroll`, {
+          method: 'POST',
+          headers: {
+            'Authorization': `Bearer ${token}`,
+            'Content-Type': 'application/json'
+          }
+        });
+
+        const data = await res.json();
+        if (res.ok) {
+          alert('Wellcome! You are enrolled in this course.');
+        } else {
+          alert(data.message || 'Failed to enroll');
+        }
+      } catch (err) {
+        alert('Server error, please try again later.');
+      }
+    }
+
+    loadCourses();
+  </script>
+
+</body>
+</html>

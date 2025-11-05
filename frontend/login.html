@@ -1,0 +1,211 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Login - Tech Courses</title>
+  <link rel="stylesheet" href="style.css">
+  <style>
+    /* =========================
+       Global Lemon Theme
+    ========================= */
+    :root {
+      --lemon: #fff44f;        /* Pure lemon */
+      --lemon-light: #fff97a;  /* Light lemon */
+      --dark: #1e1e1e;         /* Dark text */
+      --white: #ffffff;
+      --gray: #f8f8f8;
+    }
+
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+      font-family: "Poppins", sans-serif;
+    }
+
+    body {
+      background: linear-gradient(135deg, var(--lemon-light), var(--white));
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      height: 100vh;
+      padding: 20px;
+    }
+
+    /* =========================
+       Login Container
+    ========================= */
+    .auth-container {
+      background-color: var(--lemon);
+      border-radius: 15px;
+      padding: 40px 50px;
+      width: 380px;
+      box-shadow: 0 10px 30px rgba(0, 0, 0, 0.15);
+      text-align: center;
+      transition: transform 0.3s ease;
+    }
+
+    .auth-container:hover {
+      transform: translateY(-5px);
+    }
+
+    .auth-container h2 {
+      color: var(--dark);
+      margin-bottom: 25px;
+      font-size: 2rem;
+      font-weight: 700;
+    }
+
+    /* =========================
+       Form Elements
+    ========================= */
+    form {
+      display: flex;
+      flex-direction: column;
+      gap: 15px;
+    }
+
+    label {
+      text-align: left;
+      font-weight: 600;
+      color: var(--dark);
+      font-size: 0.95rem;
+    }
+
+    input {
+      padding: 12px 15px;
+      border: 2px solid var(--lemon);
+      border-radius: 8px;
+      outline: none;
+      background-color: var(--dark);
+      color: var(--white);
+      font-size: 1rem;
+      transition: all 0.3s ease;
+    }
+
+    input::placeholder {
+      color: #bbb;
+    }
+
+    input:focus {
+      border-color: var(--white);
+      box-shadow: 0 0 8px var(--lemon);
+      transform: scale(1.02);
+    }
+
+    /* =========================
+       Button
+    ========================= */
+    button {
+      margin-top: 10px;
+      background-color: var(--dark);
+      color: var(--lemon);
+      border: none;
+      border-radius: 25px;
+      padding: 12px;
+      font-weight: 600;
+      font-size: 1rem;
+      cursor: pointer;
+      transition: all 0.3s ease;
+    }
+
+    button:hover {
+      background-color: var(--white);
+      color: var(--dark);
+      transform: translateY(-2px);
+    }
+
+    /* =========================
+       Footer Text & Link
+    ========================= */
+    p {
+      margin-top: 15px;
+      color: var(--dark);
+      font-size: 0.9rem;
+    }
+
+    a {
+      color: var(--dark);
+      font-weight: 600;
+      text-decoration: none;
+      transition: color 0.3s ease;
+    }
+
+    a:hover {
+      text-decoration: underline;
+      color: var(--white);
+    }
+
+    /* =========================
+       Responsive Design
+    ========================= */
+    @media (max-width: 480px) {
+      .auth-container {
+        width: 95%;
+        padding: 30px 25px;
+      }
+
+      .auth-container h2 {
+        font-size: 1.6rem;
+      }
+    }
+  </style>
+</head>
+<body>
+
+  <div class="auth-container">
+    <h2>Wellcome Back!</h2>
+    <form id="loginForm">
+      <label for="email">Email</label>
+      <input type="email" id="email" placeholder="Enter your email" required>
+
+      <label for="password">Password</label>
+      <input type="password" id="password" placeholder="Enter your password" required>
+
+      <button type="submit">Login</button>
+      <p>Don’t have an account? <a href="./register.html">Register</a></p>
+    </form>
+  </div>
+
+  <script>
+    const form = document.getElementById('loginForm');
+    form.addEventListener('submit', async (e) => {
+      e.preventDefault();
+
+      const credentials = {
+        email: document.getElementById('email').value,
+        password: document.getElementById('password').value
+      };
+
+      try {
+        const res = await fetch('http://localhost:5000/api/auth/login', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify(credentials)
+        });
+
+        const data = await res.json();
+
+        if (res.ok) {
+          alert('Login successful!');
+          localStorage.setItem('token', data.token);
+          localStorage.setItem('role', data.role);
+
+          // Redirect user based on role
+          if (data.role === 'admin') {
+            window.location.href = './admin-dashboard.html';
+          } else {
+            window.location.href = './student-dashboard.html';
+          }
+        } else {
+          alert(data.message || 'Invalid credentials.');
+        }
+      } catch (error) {
+        alert('Server error. Please try again later.');
+      }
+    });
+  </script>
+
+</body>
+</html>
